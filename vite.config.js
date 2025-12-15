@@ -7,9 +7,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://43.204.97.158:8088',
+        target: 'https://forms.thedigitechsolutions.com',
         changeOrigin: true,
-        secure: false,
       }
     }
   }
