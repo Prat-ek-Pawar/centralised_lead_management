@@ -23,8 +23,14 @@ async function request(endpoint, options = {}) {
       throw new Error('UNAUTHORIZED');
     }
 
-    const isJson = response.headers.get('content-type')?.includes('application/json');
-    const data = isJson ? await response.json() : null;
+    const text = await response.text();
+    let data;
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch (e) {
+      console.warn('Response was not JSON:', text);
+      data = null;
+    }
 
     if (!response.ok) {
         throw new Error(data?.message || 'Something went wrong');

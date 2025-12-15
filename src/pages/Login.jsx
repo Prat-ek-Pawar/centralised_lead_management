@@ -10,7 +10,9 @@ export default function Login() {
   const { loginAdmin, loginClient, loading, error } = useAuth();
   const navigate = useNavigate();
 
+ 
   const handleSubmit = async (e) => {
+    
     e.preventDefault();
     let success = false;
     if (isClient) {
@@ -137,9 +139,7 @@ export default function Login() {
         </div>
 
         <div className="text-center text-muted" style={{ marginTop: '1.5rem', fontSize: '0.875rem' }}>
-          <Link to="/register-admin" style={{ color: 'var(--accent)' }}>
-            First time? Register Admin
-          </Link>
+          
         </div>
       </div>
     </div>

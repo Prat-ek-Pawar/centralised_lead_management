@@ -41,6 +41,9 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const data = await authApi.adminLogin(userName, password);
+      if (!data || !data.user) {
+        throw new Error('Login failed: No user data received');
+      }
       setUser(data.user);
       setRole('admin');
       return true;
@@ -57,6 +60,9 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const data = await authApi.clientLogin(userName, password);
+      if (!data || !data.user) {
+        throw new Error('Login failed: No user data received');
+      }
       setUser(data.user);
       setRole('client');
       return true;

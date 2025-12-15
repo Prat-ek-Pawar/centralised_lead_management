@@ -4,6 +4,7 @@ import SubmissionCard from '../../components/SubmissionCard';
 import { useAuth } from '../../context/AuthContext';
 import { FileText, Download, ArrowUpDown } from 'lucide-react';
 import { generateSubmissionsPDF } from '../../utils/pdfGenerator';
+import { generateSubmissionsCSV } from '../../utils/csvGenerator';
 
 export default function MySubmissions() {
   const { user } = useAuth();
@@ -11,6 +12,7 @@ export default function MySubmissions() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sortBy, setSortBy] = useState('newest');
+  const [downloadFormat, setDownloadFormat] = useState('pdf');
 
   useEffect(() => {
     loadSubmissions();
@@ -30,7 +32,7 @@ export default function MySubmissions() {
     }
   };
 
-  const handleDownloadPDF = () => {
+  const handleDownload = () => {
     if (submissions.length === 0) {
       alert('No submissions to download');
       return;
@@ -38,16 +40,18 @@ export default function MySubmissions() {
 
     const clientName = user?.userName || 'Client';
     const title = `My Submissions - ${clientName}`;
-    const filename = `my_submissions_${clientName.replace(/\s+/g, '_')}.pdf`;
+    const baseFilename = `my_submissions_${clientName.replace(/\s+/g, '_')}`;
 
-
-
-    const pdfSubmissions = sortedSubmissions.map(s => ({
+    const enrichedSubmissions = sortedSubmissions.map(s => ({
       ...s,
       clientDetails: s.clientDetails || { userName: clientName }
     }));
 
-    generateSubmissionsPDF(pdfSubmissions, title, filename);
+    if (downloadFormat === 'csv') {
+      generateSubmissionsCSV(enrichedSubmissions, `${baseFilename}.csv`);
+    } else {
+      generateSubmissionsPDF(enrichedSubmissions, title, `${baseFilename}.pdf`);
+    }
   };
 
   const sortedSubmissions = [...submissions].sort((a, b) => {
@@ -79,13 +83,32 @@ export default function MySubmissions() {
             </select>
           </div>
 
-          <button
-            onClick={handleDownloadPDF}
-            className="btn btn-primary"
-            disabled={submissions.length === 0}
-          >
-            <Download size={16} /> Download PDF
-          </button>
+          <div className="flex bg-tertiary rounded-sm p-1 gap-1 border border-border">
+            <button
+              onClick={() => setDownloadFormat('pdf')}
+              className={`btn btn-sm ${downloadFormat === 'pdf' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ borderRadius: '4px' }}
+              title="Download as PDF"
+            >
+              PDF
+            </button>
+            <button
+              onClick={() => setDownloadFormat('csv')}
+              className={`btn btn-sm ${downloadFormat === 'csv' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ borderRadius: '4px' }}
+              title="Download as Excel/CSV"
+            >
+              CSV
+            </button>
+            <div style={{ width: '1px', background: 'var(--border)', margin: '0 4px' }}></div>
+            <button
+              onClick={handleDownload}
+              className="btn btn-primary btn-sm"
+              disabled={submissions.length === 0}
+            >
+              <Download size={14} /> Download
+            </button>
+          </div>
         </div>
       </div>
 
