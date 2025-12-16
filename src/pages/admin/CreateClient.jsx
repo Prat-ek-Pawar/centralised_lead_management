@@ -19,12 +19,8 @@ export default function CreateClient() {
     setLoading(true);
     setError(null);
     try {
-      const uniqueId = crypto.randomUUID();
       const payload = {
-        ...formData,
-        publicKey: uniqueId,
-        clientID: uniqueId,
-        clientId: uniqueId
+        ...formData
       };
       const data = await adminApi.createClient(payload);
       setSuccessData(data);

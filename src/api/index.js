@@ -1,11 +1,17 @@
-const BASE_URL = '/api';
+const BASE_URL = 'https://api.thedigitechsolutions.com/api';
 
 async function request(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
   
+  const token = localStorage.getItem('authToken');
+
   const defaultHeaders = {
     'Content-Type': 'application/json',
   };
+
+  if (token) {
+    defaultHeaders['Authorization'] = `Bearer ${token}`;
+  }
 
   const config = {
     ...options,

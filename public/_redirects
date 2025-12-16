@@ -1,3 +1,0 @@
-# Netlify Rewrite Rules
-/api/*  https://forms.thedigitechsolutions.com/api/:splat  200
-/*  /index.html  200

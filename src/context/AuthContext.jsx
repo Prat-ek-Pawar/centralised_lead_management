@@ -42,10 +42,14 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authApi.adminLogin(userName, password);
       if (!data || !data.user) {
-        throw new Error('Login failed: No user data received');
+        console.error('Login response data:', data);
+        throw new Error(`Login failed: No user data received (${data ? Object.keys(data).join(',') : 'no data'})`);
       }
       setUser(data.user);
       setRole('admin');
+      if (data.token) {
+        localStorage.setItem('authToken', data.token);
+      }
       return true;
     } catch (err) {
       setError(err.message);
@@ -61,10 +65,14 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authApi.clientLogin(userName, password);
       if (!data || !data.user) {
-        throw new Error('Login failed: No user data received');
+        console.error('Login response data:', data);
+        throw new Error(`Login failed: No user data received (${data ? Object.keys(data).join(',') : 'no data'})`);
       }
       setUser(data.user);
       setRole('client');
+      if (data.token) {
+        localStorage.setItem('authToken', data.token);
+      }
       return true;
     } catch (err) {
       setError(err.message);
@@ -82,6 +90,9 @@ export const AuthProvider = ({ children }) => {
     }
     setUser(null);
     setRole(null);
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    localStorage.removeItem('role');
   };
 
   return (
