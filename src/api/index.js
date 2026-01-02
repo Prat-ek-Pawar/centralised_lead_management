@@ -1,4 +1,4 @@
-const BASE_URL = 'https://api.thedigitechsolutions.com/api';
+const BASE_URL = 'https://forms.thedigitechsolutions.com/api';
 
 async function request(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
@@ -26,6 +26,10 @@ async function request(endpoint, options = {}) {
     const response = await fetch(url, config);
     
     if (response.status === 401) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      localStorage.removeItem('role');
+      window.location.href = '/login';
       throw new Error('UNAUTHORIZED');
     }
 

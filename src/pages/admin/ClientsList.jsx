@@ -25,7 +25,7 @@ export default function ClientsList() {
   const loadClients = async () => {
     try {
       const data = await adminApi.getClients();
-      setClients(data);
+      setClients(Array.isArray(data) ? data : []);
     } catch (err) {
       setError("Failed to load clients");
     } finally {
